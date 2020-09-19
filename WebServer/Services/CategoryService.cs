@@ -10,10 +10,10 @@ namespace WebServer.Services
   public interface ICategoryService
   {
     Task<Category> GetByIdAsync(int id);
-    IEnumerable<Category> GetAll();
-    Category Create(Category category);
-    void Update(Category category);
-    void Delete(int id);
+    Task<IEnumerable<Category>> GetAllAsync();
+    Task<Category> CreateAsync(Category category);
+    Task<Category> UpdateAsync(Category category);
+    Task<int> DeleteAsync(int id);
   }
   public class CategoryService:ICategoryService
   {
@@ -25,27 +25,29 @@ namespace WebServer.Services
 
     public async Task<Category> GetByIdAsync(int id) => await _dataContext.Categories.FindAsync(id);
 
-    public IEnumerable<Category> GetAll() => _dataContext.Categories.Include(p=>p.Persons).ToList();
+    public async Task<IEnumerable<Category>> GetAllAsync() => await _dataContext.Categories.Include(p=>p.Persons).ToListAsync();
 
-    public Category Create(Category category)
+    public async Task<Category> CreateAsync(Category category)
     {
-      _dataContext.Categories.Add(category);
-      _dataContext.SaveChanges();
+      await _dataContext.Categories.AddAsync(category);
+      await _dataContext.SaveChangesAsync();
       return category;
     }
 
-    public void Update(Category category)
+    public async Task<Category> UpdateAsync(Category category)
     {
       _dataContext.Categories.Update(category);
-      _dataContext.SaveChanges();
+      await _dataContext.SaveChangesAsync();
+      return category;
     }
 
-    public void Delete(int id)
+    public async Task<int> DeleteAsync(int id)
     {
-      var deleteCategory = _dataContext.Categories.Include(p => p.Persons).First(c => c.Id == id);
-      if (deleteCategory == null) return;
+      var deleteCategory =await _dataContext.Categories.Include(p => p.Persons).FirstAsync(c => c.Id == id);
+      if (deleteCategory == null) return id;
       _dataContext.Categories.Remove(deleteCategory);
-      _dataContext.SaveChanges();
+      await _dataContext.SaveChangesAsync();
+      return id;
     }
   }
 }

@@ -19,9 +19,9 @@ namespace WebServer.Controllers
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll()
     {
-      var categories = _categoryService.GetAll();
+      var categories = await _categoryService.GetAllAsync();
       return Ok(categories);
     }
 
@@ -33,11 +33,11 @@ namespace WebServer.Controllers
     }
 
     [HttpPost("create")]
-    public IActionResult Create([FromBody] Category category)
+    public async Task<IActionResult> Create([FromBody] Category category)
     {
       try
       {
-        _categoryService.Create(category);
+        await _categoryService.CreateAsync(category);
         return Ok();
       }
       catch (Exception ex)
@@ -48,11 +48,11 @@ namespace WebServer.Controllers
     }
 
     [HttpPut("Update")]
-    public IActionResult Update([FromBody]Category category)
+    public async Task<IActionResult> Update([FromBody]Category category)
     {
       try
       {
-        _categoryService.Update(category);
+        await _categoryService.UpdateAsync(category);
         return Ok();
       }
       catch (AppException ex)
@@ -63,9 +63,9 @@ namespace WebServer.Controllers
     }
 
     [HttpPost("Delete/{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-      _categoryService.Delete(id);
+      await _categoryService.DeleteAsync(id);
       return Ok();
     }
   }
