@@ -1,4 +1,5 @@
 ﻿using System;
+using Client.Services;
 
 namespace Client
 {
@@ -6,7 +7,9 @@ namespace Client
   {
     static void Main(string[] args)
     {
-      Console.WriteLine("Hello World!");
+      var restService = new RestService();
+      restService.GetPerson();
+      Console.ReadLine();
     }
   }
 }
