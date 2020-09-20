@@ -55,8 +55,8 @@ namespace WebServer.Controllers
       }
     }
 
-    [HttpPut("Update")]
-    public async Task<IActionResult> Update([FromBody]Person person)
+    [HttpPut]
+    public async Task<IActionResult> Update(Person person)
     {
       try
       {
@@ -74,6 +74,13 @@ namespace WebServer.Controllers
     public async Task<IActionResult> Delete(int id)
     {
        await _personService.DeleteAsync(id);
+      return Ok();
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> MyDelete(Person person)
+    {
+      await _personService.MyDeleteAsync(person);
       return Ok();
     }
   }

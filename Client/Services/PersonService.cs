@@ -12,64 +12,65 @@ namespace Client.Services
     void GetAll();
     void GetById(int id);
     void Create(Person person);
+    void Update(Person person);
+    void Delete(Person person);
   }
 
   public class PersonService : IPersonService
   {
-    private readonly string _url = "http://localhost:4000/";
-    private string _getAllPerson;
-    private string _createPerson;
+    private readonly string _url = "http://localhost:4000/person/";
     private readonly IRestClient _client;
-    private IRestRequest RestRequest { get; set; }
 
     public PersonService()
     {
       _client = new RestClient(_url);
-      ImplementationFields();
-    }
-
-    private void ImplementationFields()
-    {
-      _getAllPerson = "http://localhost:4000/person/";
-      _createPerson = "http://localhost:4000/person/";
     }
 
     public void GetAll()
     {
-      var request = new RestRequest(_getAllPerson);
+      var request = new RestRequest(_url);
       var response = _client.Get<List<Person>>(request);
       var responseData = JsonConvert.DeserializeObject<List<Person>>(response.Content);
-      if (!response.IsSuccessful)
-      {
-        BadResponse(response);
-      }
-      SuccessfulResponse(response, responseData);
+      ResponseDataDescription(response, responseData);
     }
 
     public void GetById(int id)
     {
-      var request = new RestRequest(_getAllPerson + id);
+      var request = new RestRequest(_url + id);
       var response = _client.Get<Person>(request);
       var responseData = JsonConvert.DeserializeObject<Person>(response.Content);
-      if (!response.IsSuccessful)
-      {
-        BadResponse(response);
-      }
-      else
-      {
-        SuccessfulResponse(response, responseData);
-      }
+      ResponseDataDescription(response, responseData);
     }
 
     public void Create(Person person)
     {
-      var request = new RestRequest(_createPerson) {Method = Method.POST, RequestFormat = DataFormat.Json};
-      //request.AddHeader("Content-Type", "application/json; CHARSET=UTF-8");
-      request.AddJsonBody(person); // uses JsonSerializer
-
-      //request.AddJsonBody(person);
+      var request = new RestRequest(_url) {Method = Method.POST, RequestFormat = DataFormat.Json};
+      request.AddJsonBody(person);
       var response = _client.Post(request);
       var responseData = JsonConvert.DeserializeObject<Person>(response.Content);
+      ResponseDataDescription(response, responseData);
+    }
+
+    public void Update(Person person)
+    {
+      var request = new RestRequest(_url){Method = Method.PUT, RequestFormat = DataFormat.Json};
+      request.AddJsonBody(person);
+      var response = _client.Put(request);
+      var responseData = JsonConvert.DeserializeObject<Person>(response.Content);
+      ResponseDataDescription(response, responseData);
+    }
+
+    public void Delete(Person person)
+    {
+      var request = new RestRequest(_url) {Method = Method.DELETE, RequestFormat = DataFormat.Json};
+      request.AddJsonBody(person);
+      var response = _client.Delete(request);
+      var responseData = JsonConvert.DeserializeObject<Person>(response.Content);
+      ResponseDataDescription(response,responseData);
+    }
+
+    private void ResponseDataDescription(IRestResponse response, Person responseData)
+    {
       if (!response.IsSuccessful)
       {
         BadResponse(response);
@@ -79,13 +80,22 @@ namespace Client.Services
         SuccessfulResponse(response, responseData);
       }
     }
-
+    private void ResponseDataDescription(IRestResponse response, IEnumerable<Person> responseData)
+    {
+      if (!response.IsSuccessful)
+      {
+        BadResponse(response);
+      }
+      else
+      {
+        SuccessfulResponse(response, responseData);
+      }
+    }
     private void BadResponse(IRestResponse response)
     {
       Console.WriteLine($"Status code :{response.StatusCode}");
       Console.WriteLine($"Error  message:{response.ErrorMessage}");
     }
-
     private void SuccessfulResponse(IRestResponse response, IEnumerable<Person> data)
     {
       Console.WriteLine($"Status code :{response.StatusCode}");
@@ -98,7 +108,6 @@ namespace Client.Services
         Console.WriteLine("--------------------------");
       }
     }
-
     private void SuccessfulResponse(IRestResponse response, Person data)
     {
       if (response.StatusCode == HttpStatusCode.OK && data == null)
@@ -113,8 +122,6 @@ namespace Client.Services
         Console.WriteLine($"Category :{data.Category.Name}");
         Console.WriteLine("--------------------------");
       }
-      
-
     }
   }
 }

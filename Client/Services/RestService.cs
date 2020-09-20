@@ -25,7 +25,14 @@ namespace Client.Services
       _personService.Create(person);
     }
 
+    public void UpdatePerson(Person person)
+    {
+      _personService.Update(person);
+    }
 
-    
+    public void DeletePerson(Person person)
+    {
+      _personService.Delete(person);
+    }
   }
 }

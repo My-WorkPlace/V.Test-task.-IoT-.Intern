@@ -13,6 +13,7 @@ namespace WebServer.Services
     Task<Person> CreateAsync(Person person);
     Task<Person> UpdateAsync(Person person);
     Task<int> DeleteAsync(int id);
+    Task<Person> MyDeleteAsync(Person person);
   }
   public class PersonService : IPersonService
   {
@@ -37,9 +38,23 @@ namespace WebServer.Services
 
     public async Task<Person> UpdateAsync(Person person)
     {
-      _dataContext.Persons.Update(person);
+      var tmp = await _dataContext.Persons.Include(c=>c.Category).FirstOrDefaultAsync(x => x.FirstName == person.FirstName || x.LastName == person.LastName);
+      if (tmp == null)
+      {
+        await _dataContext.Persons.AddAsync(person);
+        await _dataContext.SaveChangesAsync();
+        return person;
+      }
+
+      //tmp = (Person)person.Clone();
+      tmp.FirstName = person.FirstName;
+      tmp.LastName = person.LastName;
+      tmp.CategoryId = person.CategoryId;
+
+      _dataContext.Persons.Update(tmp);
       await _dataContext.SaveChangesAsync();
       return person;
+
     }
 
     public async Task<int> DeleteAsync(int id)
@@ -49,6 +64,16 @@ namespace WebServer.Services
       _dataContext.Persons.Remove(deletePerson);
       await _dataContext.SaveChangesAsync();
       return id;
+    }
+
+    public async Task<Person> MyDeleteAsync(Person person)
+    {
+      var deletePerson = await _dataContext.Persons.FirstOrDefaultAsync(x =>
+        x.FirstName == person.FirstName && x.LastName == person.LastName);
+      if (deletePerson == null) return person;
+      _dataContext.Persons.Remove(deletePerson);
+      await _dataContext.SaveChangesAsync();
+      return deletePerson;
     }
   }
 }
