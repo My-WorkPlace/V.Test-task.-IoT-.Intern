@@ -28,12 +28,20 @@ namespace WebServer.Controllers
     [HttpGet("{id}")]
     public async  Task<IActionResult> GetById(int id)
     {
-      var person =await _personService.GetByIdAsync(id);
-      return Ok(person);
+      try
+      {
+        var person = await _personService.GetByIdAsync(id);
+        return Ok(person);
+      }
+      catch (Exception ex)
+      {
+        // return error message if there was an exception
+        return BadRequest(new { message = ex.Message });
+      }
     }
 
-    [HttpPost("create")]
-    public async Task<IActionResult> Create([FromBody] Person person)
+    [HttpPost]
+    public async Task<IActionResult> Create(Person person)
     {
       try
       {

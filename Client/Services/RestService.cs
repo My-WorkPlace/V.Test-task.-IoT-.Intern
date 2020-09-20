@@ -1,67 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using Client.Entities;
-using Newtonsoft.Json;
-using RestSharp;
+﻿using Client.Entities;
 
 namespace Client.Services
 {
   public class RestService
   {
-    private readonly string _url = "http://localhost:4000/";
-    private string _getPerson;
-    private string _getCategory;
-    private readonly IRestClient _client;
-    private IRestRequest RestRequest { get; set; }
+    private readonly IPersonService _personService;
     public RestService()
     {
-      _client = new RestClient(_url);
-      ImplementationFields();
+      _personService = new PersonService();
     }
 
-    private void ImplementationFields()
+    public void GetAllPerson()
     {
-      _getPerson = "http://localhost:4000/person/";
-      _getCategory = "http://localhost:4000/category/";
+      _personService.GetAll();
     }
 
-    public void GetPerson()
+    public void GetPersonById(int id)
     {
-      RestRequest = new RestRequest(_getPerson);
-      var response = _client.Get<List<Person>>(RestRequest);
-      var responseData = JsonConvert.DeserializeObject<List<Person>>(response.Content);
-      foreach (var person in responseData)
-      {
-        Console.WriteLine($" f name :{person.FirstName}");
-        Console.WriteLine($" l name :{person.LastName}");
-        Console.WriteLine($" category :{person.Category.Name}");
-        Console.WriteLine("-------------------------");
-      }
-      if (!response.IsSuccessful)
-      {
-        BadResponse(response);
-      }
-      SuccessfulResponse(response);
+      _personService.GetById(id);
     }
 
-    private void BadResponse(IRestResponse response)
+    public void CreatePerson(Person person)
     {
-      Console.WriteLine($"Status code :{response.StatusCode}");
-      Console.WriteLine($"Error  message:{response.ErrorMessage}");
+      _personService.Create(person);
     }
 
-    private void SuccessfulResponse(IRestResponse response)
-    {
-      Console.WriteLine($"Status code :{response.StatusCode}");
-      Console.WriteLine($"Response content :{response.Content}");
 
-      //foreach (var obj in data)
-      //{
-      //  Console.WriteLine($"First name :{obj.FirstName}");
-      //  Console.WriteLine($"Last name :{obj.LastName}");
-      //  //Console.WriteLine($"Category :{obj.Category.Name}");
-      //  Console.WriteLine($"--------------------------");
-      //}
-    }
+    
   }
 }

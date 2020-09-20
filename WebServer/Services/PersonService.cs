@@ -29,7 +29,7 @@ namespace WebServer.Services
 
     public async Task<Person> CreateAsync(Person person)
     {
-      person.Category = await _categoryService.GetByIdAsync(person.Category.Id);
+      //person.Category = await _categoryService.GetByIdAsync(person.CategoryId);
       await _dataContext.Persons.AddAsync(person);
       await _dataContext.SaveChangesAsync();
       return person;
