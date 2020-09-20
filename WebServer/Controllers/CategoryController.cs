@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc;
 using WebServer.Entities;
 using WebServer.Helpers;
@@ -28,12 +29,21 @@ namespace WebServer.Controllers
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-      var category =await _categoryService.GetByIdAsync(id);
-      return Ok(category);
+      try
+      {
+        var category = await _categoryService.GetByIdAsync(id);
+        if (category == null) throw new Exception(); 
+        return Ok(category);
+      }
+      catch (Exception ex)
+      {
+        // return error message if there was an exception
+        return BadRequest(new { message = ex.Message });
+      }
     }
 
-    [HttpPost("create")]
-    public async Task<IActionResult> Create([FromBody] Category category)
+    [HttpPost]
+    public async Task<IActionResult> Create(Category category)
     {
       try
       {
@@ -47,8 +57,8 @@ namespace WebServer.Controllers
       }
     }
 
-    [HttpPut("Update")]
-    public async Task<IActionResult> Update([FromBody]Category category)
+    [HttpPut]
+    public async Task<IActionResult> Update(Category category)
     {
       try
       {
@@ -66,6 +76,13 @@ namespace WebServer.Controllers
     public async Task<IActionResult> Delete(int id)
     {
       await _categoryService.DeleteAsync(id);
+      return Ok();
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> MyDelete(Category category)
+    {
+      await _categoryService.MyDeleteAsync(category);
       return Ok();
     }
   }

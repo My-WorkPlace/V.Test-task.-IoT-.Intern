@@ -80,8 +80,16 @@ namespace WebServer.Controllers
     [HttpDelete]
     public async Task<IActionResult> MyDelete(Person person)
     {
-      await _personService.MyDeleteAsync(person);
-      return Ok();
+      try
+      {
+        await _personService.MyDeleteAsync(person);
+        return Ok();
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(new { message = ex.Message });
+      }
+
     }
   }
 }

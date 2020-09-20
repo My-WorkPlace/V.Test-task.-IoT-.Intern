@@ -20,17 +20,33 @@ namespace Client.Services
   {
     private readonly string _url = "http://localhost:4000/person/";
     private readonly IRestClient _client;
-
+    private readonly List<Person> _personsData;
     public PersonService()
     {
       _client = new RestClient(_url);
+      _personsData = new List<Person>();
+      UpdatePersonData();
+    }
+
+    private void UpdatePersonData(IEnumerable<Person> data)
+    {
+      _personsData.Clear();
+      _personsData.AddRange(data);
+    }
+    private void UpdatePersonData()
+    {
+      var request = new RestRequest(_url);
+      var response = _client.Get<List<Person>>(request);
+      var responseData = JsonConvert.DeserializeObject<List<Person>>(response.Content);
+      UpdatePersonData(responseData);
     }
 
     public void GetAll()
     {
       var request = new RestRequest(_url);
       var response = _client.Get<List<Person>>(request);
-      var responseData = JsonConvert.DeserializeObject<List<Person>>(response.Content);
+      var responseData =JsonConvert.DeserializeObject<List<Person>>(response.Content);
+      UpdatePersonData(responseData);
       ResponseDataDescription(response, responseData);
     }
 
@@ -48,24 +64,32 @@ namespace Client.Services
       request.AddJsonBody(person);
       var response = _client.Post(request);
       var responseData = JsonConvert.DeserializeObject<Person>(response.Content);
+      UpdatePersonData();
       ResponseDataDescription(response, responseData);
     }
 
     public void Update(Person person)
     {
       var request = new RestRequest(_url){Method = Method.PUT, RequestFormat = DataFormat.Json};
-      request.AddJsonBody(person);
+      var bodyObj = _personsData.Find(p => p.FirstName == person.FirstName || p.LastName == person.LastName);//TODO not sure
+      bodyObj.FirstName = person.FirstName;
+      bodyObj.LastName = person.LastName;
+      bodyObj.CategoryId = person.CategoryId;
+      request.AddJsonBody(bodyObj);
       var response = _client.Put(request);
       var responseData = JsonConvert.DeserializeObject<Person>(response.Content);
+      UpdatePersonData();
       ResponseDataDescription(response, responseData);
     }
 
     public void Delete(Person person)
     {
       var request = new RestRequest(_url) {Method = Method.DELETE, RequestFormat = DataFormat.Json};
-      request.AddJsonBody(person);
+      var bodyObj = _personsData.Find(p => p.FirstName == person.FirstName || p.LastName == person.LastName);//TODO not sure
+      request.AddJsonBody(bodyObj);
       var response = _client.Delete(request);
       var responseData = JsonConvert.DeserializeObject<Person>(response.Content);
+      UpdatePersonData();
       ResponseDataDescription(response,responseData);
     }
 

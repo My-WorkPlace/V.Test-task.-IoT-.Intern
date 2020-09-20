@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WebServer.Entities;
@@ -30,7 +31,6 @@ namespace WebServer.Services
 
     public async Task<Person> CreateAsync(Person person)
     {
-      //person.Category = await _categoryService.GetByIdAsync(person.CategoryId);
       await _dataContext.Persons.AddAsync(person);
       await _dataContext.SaveChangesAsync();
       return person;
@@ -38,7 +38,8 @@ namespace WebServer.Services
 
     public async Task<Person> UpdateAsync(Person person)
     {
-      var tmp = await _dataContext.Persons.Include(c=>c.Category).FirstOrDefaultAsync(x => x.FirstName == person.FirstName || x.LastName == person.LastName);
+      //var tmp = await _dataContext.Persons.Include(c => c.Category).FirstOrDefaultAsync(x => x.FirstName == person.FirstName || x.LastName == person.LastName);
+      var tmp = await _dataContext.Persons.Include(c => c.Category).FirstOrDefaultAsync(x => x.Id == person.Id);
       if (tmp == null)
       {
         await _dataContext.Persons.AddAsync(person);
@@ -53,8 +54,7 @@ namespace WebServer.Services
 
       _dataContext.Persons.Update(tmp);
       await _dataContext.SaveChangesAsync();
-      return person;
-
+      return tmp;
     }
 
     public async Task<int> DeleteAsync(int id)
@@ -68,8 +68,7 @@ namespace WebServer.Services
 
     public async Task<Person> MyDeleteAsync(Person person)
     {
-      var deletePerson = await _dataContext.Persons.FirstOrDefaultAsync(x =>
-        x.FirstName == person.FirstName && x.LastName == person.LastName);
+      var deletePerson = await _dataContext.Persons.FindAsync(person.Id);
       if (deletePerson == null) return person;
       _dataContext.Persons.Remove(deletePerson);
       await _dataContext.SaveChangesAsync();
