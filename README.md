@@ -10,6 +10,6 @@ It doesn’t really matter what it does as long as it satisfies following requir
 
   And please respond to following questions:
 -	Are you interested in IoT (internet of things) and cloud solutions (Azure)?
-Sure I find out it interesting.
+-Sure I find out it interesting.
 -	Are you ready to work in a small team for first several months (basically just you and senior dev/architect who will supervise you)?
-It seems like, that what i'm looking for, yes i'm ready to it.Let's rock!
+-It seems like, that what i'm looking for, yes i'm ready to it.Let's rock!
