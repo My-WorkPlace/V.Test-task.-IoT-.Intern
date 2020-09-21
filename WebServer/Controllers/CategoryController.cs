@@ -33,7 +33,6 @@ namespace WebServer.Controllers
     [HttpPost]
     public async Task<IActionResult> Create(Category category)
     {
-      
       await _categoryService.CreateAsync(category);
       return Ok();
     }
