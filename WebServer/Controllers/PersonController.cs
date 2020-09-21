@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebServer.Entities;
-using WebServer.Helpers;
 using WebServer.Services;
 
 namespace WebServer.Controllers
@@ -26,63 +25,31 @@ namespace WebServer.Controllers
     }
 
     [HttpGet("{id}")]
-    public async  Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-      try
-      {
-        var person = await _personService.GetByIdAsync(id);
-        return Ok(person);
-      }
-      catch (Exception ex)
-      {
-        // return error message if there was an exception
-        return BadRequest(new { message = ex.Message });
-      }
+      var person = await _personService.GetByIdAsync(id);
+      return person == null ? (IActionResult)NotFound() : Ok(person);
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(Person person)
     {
-      try
-      {
-        await _personService.CreateAsync(person);
-        return Ok();
-      }
-      catch (Exception ex)
-      {
-        // return error message if there was an exception
-        return BadRequest(new { message = ex.Message });
-      }
+      await _personService.CreateAsync(person);
+      return Ok();
     }
 
     [HttpPut]
     public async Task<IActionResult> Update(Person person)
     {
-      try
-      {
-        await _personService.UpdateAsync(person);
-        return Ok();
-      }
-      catch (AppException ex)
-      {
-        // return error message if there was an exception
-        return BadRequest(new { message = ex.Message });
-      }
+      await _personService.UpdateAsync(person);
+      return Ok();
     }
-    
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-      try
-      {
-        await _personService.DeleteAsync(id);
-        return Ok();
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(new { message = ex.Message });
-      }
-
+      await _personService.DeleteAsync(id);
+      return NoContent();
     }
   }
 }

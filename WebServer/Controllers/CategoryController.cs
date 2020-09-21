@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebServer.Entities;
-using WebServer.Helpers;
 using WebServer.Services;
 
 namespace WebServer.Controllers
@@ -28,62 +26,30 @@ namespace WebServer.Controllers
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-      try
-      {
-        var category = await _categoryService.GetByIdAsync(id);
-        if (category == null) throw new Exception(); 
-        return Ok(category);
-      }
-      catch (Exception ex)
-      {
-        // return error message if there was an exception
-        return BadRequest(new { message = ex.Message });
-      }
+      var category = await _categoryService.GetByIdAsync(id);
+      return category == null ? (IActionResult)NotFound() : Ok(category);
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(Category category)
     {
-      try
-      {
-        await _categoryService.CreateAsync(category);
-        return Ok();
-      }
-      catch (Exception ex)
-      {
-        // return error message if there was an exception
-        return BadRequest(new { message = ex.Message });
-      }
+      
+      await _categoryService.CreateAsync(category);
+      return Ok();
     }
 
     [HttpPut]
     public async Task<IActionResult> Update(Category category)
     {
-      try
-      {
-        await _categoryService.UpdateAsync(category);
-        return Ok();
-      }
-      catch (AppException ex)
-      {
-        // return error message if there was an exception
-        return BadRequest(new { message = ex.Message });
-      }
+      await _categoryService.UpdateAsync(category);
+      return Ok();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-      try
-      {
-        await _categoryService.DeleteAsync(id);
-        return Ok();
-      }
-      catch (Exception ex)
-      {
-        return NotFound();
-      }
-      
+      await _categoryService.DeleteAsync(id);
+      return NoContent();
     }
   }
 }

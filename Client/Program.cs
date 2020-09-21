@@ -10,13 +10,13 @@ namespace Client
   {
     static void Main(string[] args)
     {
-      var personService = new PersonService();
-      //var categoryService = new CategoryService();
+      //var personService = new PersonService();
+      var categoryService = new CategoryService();
       List<Category> categories = new List<Category>()
      {
        new Category()
        {
-         Name = "Category one"
+         Name = ""
        },
        new Category()
        {
@@ -27,7 +27,7 @@ namespace Client
        }
      };
 
-      //categoryService.Create(categories[0]);
+      categoryService.Create(categories[0]);
       //categoryService.Create(categories[1]);
       //categoryService.Create(categories[2]);
       //categoryService.GetAll();
@@ -77,8 +77,9 @@ namespace Client
       //tmp.CategoryId = 2;
       //tmp.FirstName = "User was updated";
       //personService.Update(tmp);
-      var delPerson = personService.PersonsData.First();
-      personService.Delete(delPerson.Id);
+
+      //var delPerson = personService.PersonsData.First();
+      //personService.Delete(delPerson.Id);
       Console.ReadLine();
     }
   }
