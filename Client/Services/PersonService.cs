@@ -86,9 +86,9 @@ namespace Client.Services
     {
       var request = new RestRequest(_url) {Method = Method.DELETE, RequestFormat = DataFormat.Json};
       var bodyObj = _personsData.Find(p => p.FirstName == person.FirstName || p.LastName == person.LastName);//TODO not sure
-      request.AddJsonBody(bodyObj);
+      request.AddJsonBody(bodyObj.Id);
       var response = _client.Delete(request);
-      var responseData = JsonConvert.DeserializeObject<Person>(response.Content);
+      var responseData = JsonConvert.DeserializeObject<Person>(response.Content);//Chance generic type to int if need
       UpdatePersonData();
       ResponseDataDescription(response,responseData);
     }
@@ -128,7 +128,7 @@ namespace Client.Services
       {
         Console.WriteLine($"First name :{obj.FirstName}");
         Console.WriteLine($"Last name :{obj.LastName}");
-        Console.WriteLine($"Category :{obj.Category.Name}");
+        Console.WriteLine($"Category Id :{obj.CategoryId}");
         Console.WriteLine("--------------------------");
       }
     }
@@ -143,7 +143,7 @@ namespace Client.Services
         Console.WriteLine("Persons");
         Console.WriteLine($"First name :{data.FirstName}");
         Console.WriteLine($"Last name :{data.LastName}");
-        Console.WriteLine($"Category :{data.Category.Name}");
+        Console.WriteLine($"Category Id :{data.CategoryId}");
         Console.WriteLine("--------------------------");
       }
     }

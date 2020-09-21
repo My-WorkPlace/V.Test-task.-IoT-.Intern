@@ -1,25 +1,16 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace WebServer.Entities
 {
-  public class Person:ICloneable
+  public class Person
   {
     public int Id { get; set; }
+    [Required]
     public string FirstName { get; set; }
+    [Required]
     public string LastName { get; set; }
 
     public int CategoryId { get; set; } 
     public Category Category { get; set; }
-
-    public object Clone()
-    {
-      return new Person()
-      {
-        Id = this.Id,
-        FirstName = this.FirstName,
-        LastName = this.LastName,
-        CategoryId = this.CategoryId,
-      };
-    }
   }
 }

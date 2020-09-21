@@ -69,20 +69,13 @@ namespace WebServer.Controllers
         return BadRequest(new { message = ex.Message });
       }
     }
-
-    [HttpPost("Delete/{id}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-       await _personService.DeleteAsync(id);
-      return Ok();
-    }
-
-    [HttpDelete]
-    public async Task<IActionResult> MyDelete(Person person)
+    
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> MyDelete(int id)
     {
       try
       {
-        await _personService.MyDeleteAsync(person);
+        await _personService.MyDeleteAsync(id);
         return Ok();
       }
       catch (Exception ex)

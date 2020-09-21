@@ -8,7 +8,7 @@ namespace WebServer.Helpers
     public DataContext(DbContextOptions<DataContext> options)
       : base(options)
     {
-      Database.EnsureCreated();
+      //Database.EnsureCreated();
     }
 
     public DbSet<Person> Persons { get; set; }

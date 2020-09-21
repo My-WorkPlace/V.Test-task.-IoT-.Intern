@@ -14,20 +14,18 @@ namespace WebServer.Services
     Task<Person> CreateAsync(Person person);
     Task<Person> UpdateAsync(Person person);
     Task<int> DeleteAsync(int id);
-    Task<Person> MyDeleteAsync(Person person);
+    Task<int> MyDeleteAsync(int id);
   }
   public class PersonService : IPersonService
   {
     private readonly DataContext _dataContext;
-    private readonly ICategoryService _categoryService;
-    public PersonService(DataContext dataContext, ICategoryService categoryService)
+    public PersonService(DataContext dataContext)
     {
       _dataContext = dataContext;
-      _categoryService = categoryService;
     }
-    public async Task<Person> GetByIdAsync(int id) => await _dataContext.Persons.Include(c => c.Category).FirstAsync(obj => obj.Id == id);
+    public async Task<Person> GetByIdAsync(int id) => await _dataContext.Persons.FindAsync(id);
 
-    public async Task<IEnumerable<Person>> GetAllAsync() => await _dataContext.Persons.Include(c => c.Category).ToListAsync();
+    public async Task<IEnumerable<Person>> GetAllAsync() => await _dataContext.Persons.ToListAsync();
 
     public async Task<Person> CreateAsync(Person person)
     {
@@ -38,16 +36,13 @@ namespace WebServer.Services
 
     public async Task<Person> UpdateAsync(Person person)
     {
-      //var tmp = await _dataContext.Persons.Include(c => c.Category).FirstOrDefaultAsync(x => x.FirstName == person.FirstName || x.LastName == person.LastName);
-      var tmp = await _dataContext.Persons.Include(c => c.Category).FirstOrDefaultAsync(x => x.Id == person.Id);
+      var tmp = await _dataContext.Persons.FirstOrDefaultAsync(x => x.Id == person.Id);
       if (tmp == null)
       {
         await _dataContext.Persons.AddAsync(person);
         await _dataContext.SaveChangesAsync();
         return person;
       }
-
-      //tmp = (Person)person.Clone();
       tmp.FirstName = person.FirstName;
       tmp.LastName = person.LastName;
       tmp.CategoryId = person.CategoryId;
@@ -66,13 +61,13 @@ namespace WebServer.Services
       return id;
     }
 
-    public async Task<Person> MyDeleteAsync(Person person)
+    public async Task<int> MyDeleteAsync(int id)
     {
-      var deletePerson = await _dataContext.Persons.FindAsync(person.Id);
-      if (deletePerson == null) return person;
+      var deletePerson = await _dataContext.Persons.FirstOrDefaultAsync(x=>x.Id == id);
+      if (deletePerson == null) return id;
       _dataContext.Persons.Remove(deletePerson);
       await _dataContext.SaveChangesAsync();
-      return deletePerson;
+      return id;
     }
   }
 }

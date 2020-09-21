@@ -25,7 +25,7 @@ namespace WebServer.Services
 
     public async Task<Category> GetByIdAsync(int id) => await _dataContext.Categories.FindAsync(id);
 
-    public async Task<IEnumerable<Category>> GetAllAsync() => await _dataContext.Categories.Include(p=>p.Persons).ToListAsync();
+    public async Task<IEnumerable<Category>> GetAllAsync() => await _dataContext.Categories.ToListAsync();
 
     public async Task<Category> CreateAsync(Category category)
     {
@@ -36,7 +36,7 @@ namespace WebServer.Services
 
     public async Task<Category> UpdateAsync(Category category)
     {
-      var tmp = await _dataContext.Categories.FirstOrDefaultAsync(c => c.Name == category.Name);
+      var tmp = await _dataContext.Categories.FirstOrDefaultAsync(c => c.Id == category.Id);
       if (tmp == null)
       {
         await _dataContext.Categories.AddAsync(category);
