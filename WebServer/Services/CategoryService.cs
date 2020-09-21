@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WebServer.Entities;
@@ -12,8 +14,7 @@ namespace WebServer.Services
     Task<IEnumerable<Category>> GetAllAsync();
     Task<Category> CreateAsync(Category category);
     Task<Category> UpdateAsync(Category category);
-    Task<int> DeleteAsync(int id);
-    Task<Category> MyDeleteAsync(Category category);
+    Task<int> DeleteAsync(int categoryId);
   }
   public class CategoryService:ICategoryService
   {
@@ -46,25 +47,16 @@ namespace WebServer.Services
       tmp.Name = category.Name;
       _dataContext.Categories.Update(tmp);
       await _dataContext.SaveChangesAsync();
-      return category;
+      return tmp;
     }
 
-    public async Task<int> DeleteAsync(int id)
+    public async Task<int> DeleteAsync(int categoryId)
     {
-      var deleteCategory =await _dataContext.Categories.Include(p => p.Persons).FirstAsync(c => c.Id == id);
-      if (deleteCategory == null) return id;
+      var deleteCategory = await _dataContext.Categories.Include(p => p.Persons).FirstAsync(c => c.Id == categoryId);
+      if (deleteCategory.Persons.Any()) throw new Exception();
       _dataContext.Categories.Remove(deleteCategory);
       await _dataContext.SaveChangesAsync();
-      return id;
-    }
-
-    public async Task<Category> MyDeleteAsync(Category category)
-    {
-      var deleteCategory = await _dataContext.Categories.Include(p => p.Persons).FirstAsync(c => c.Id == category.Id);
-      if (deleteCategory == null) return category;
-      _dataContext.Categories.Remove(deleteCategory);
-      await _dataContext.SaveChangesAsync();
-      return deleteCategory;
+      return categoryId;
     }
   }
 }

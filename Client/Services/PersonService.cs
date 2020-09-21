@@ -13,7 +13,7 @@ namespace Client.Services
     void GetById(int id);
     void Create(Person person);
     void Update(Person person);
-    void Delete(Person person);
+    void Delete(int personId);
   }
 
   public class PersonService : IPersonService
@@ -71,7 +71,7 @@ namespace Client.Services
     public void Update(Person person)
     {
       var request = new RestRequest(_url){Method = Method.PUT, RequestFormat = DataFormat.Json};
-      var bodyObj = _personsData.Find(p => p.FirstName == person.FirstName || p.LastName == person.LastName);//TODO not sure
+      var bodyObj = _personsData.Find(p => p.Id == person.Id);
       bodyObj.FirstName = person.FirstName;
       bodyObj.LastName = person.LastName;
       bodyObj.CategoryId = person.CategoryId;
@@ -82,11 +82,11 @@ namespace Client.Services
       ResponseDataDescription(response, responseData);
     }
 
-    public void Delete(Person person)
+    public void Delete(int personId)
     {
       var request = new RestRequest(_url) {Method = Method.DELETE, RequestFormat = DataFormat.Json};
-      var bodyObj = _personsData.Find(p => p.FirstName == person.FirstName || p.LastName == person.LastName);//TODO not sure
-      request.AddJsonBody(bodyObj.Id);
+      //var bodyObj = _personsData.Find(p => p.Id == person.Id);
+      request.AddJsonBody(personId);
       var response = _client.Delete(request);
       var responseData = JsonConvert.DeserializeObject<Person>(response.Content);//Chance generic type to int if need
       UpdatePersonData();

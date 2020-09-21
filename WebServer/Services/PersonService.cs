@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WebServer.Entities;
@@ -14,7 +13,6 @@ namespace WebServer.Services
     Task<Person> CreateAsync(Person person);
     Task<Person> UpdateAsync(Person person);
     Task<int> DeleteAsync(int id);
-    Task<int> MyDeleteAsync(int id);
   }
   public class PersonService : IPersonService
   {
@@ -51,17 +49,8 @@ namespace WebServer.Services
       await _dataContext.SaveChangesAsync();
       return tmp;
     }
-
+    
     public async Task<int> DeleteAsync(int id)
-    {
-      var deletePerson = await _dataContext.Persons.FindAsync(id);
-      if (deletePerson == null) return id;
-      _dataContext.Persons.Remove(deletePerson);
-      await _dataContext.SaveChangesAsync();
-      return id;
-    }
-
-    public async Task<int> MyDeleteAsync(int id)
     {
       var deletePerson = await _dataContext.Persons.FirstOrDefaultAsync(x=>x.Id == id);
       if (deletePerson == null) return id;

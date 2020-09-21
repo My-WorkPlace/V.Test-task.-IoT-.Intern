@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc;
 using WebServer.Entities;
 using WebServer.Helpers;
@@ -72,18 +71,19 @@ namespace WebServer.Controllers
       }
     }
 
-    [HttpPost("Delete/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-      await _categoryService.DeleteAsync(id);
-      return Ok();
-    }
-
-    [HttpDelete]
-    public async Task<IActionResult> MyDelete(Category category)
-    {
-      await _categoryService.MyDeleteAsync(category);
-      return Ok();
+      try
+      {
+        await _categoryService.DeleteAsync(id);
+        return Ok();
+      }
+      catch (Exception ex)
+      {
+        return NotFound();
+      }
+      
     }
   }
 }
