@@ -18,12 +18,12 @@ namespace Client.Services
 
   public class PersonService : IPersonService
   {
-    private readonly string _url = "http://localhost:4000/person/";
+    private const string Url = "http://localhost:4000/person/";
     private readonly IRestClient _client;
     public List<Person> PersonsData { get; }
     public PersonService()
     {
-      _client = new RestClient(_url);
+      _client = new RestClient(Url);
       PersonsData = new List<Person>();
       UpdatePersonData();
     }
@@ -35,7 +35,7 @@ namespace Client.Services
     }
     private void UpdatePersonData()
     {
-      var request = new RestRequest(_url);
+      var request = new RestRequest(Url);
       var response = _client.Get<List<Person>>(request);
       var responseData = JsonConvert.DeserializeObject<List<Person>>(response.Content);
       UpdatePersonData(responseData);
@@ -43,7 +43,7 @@ namespace Client.Services
 
     public void GetAll()
     {
-      var request = new RestRequest(_url);
+      var request = new RestRequest(Url);
       var response = _client.Get<List<Person>>(request);
       var responseData = JsonConvert.DeserializeObject<List<Person>>(response.Content);
       UpdatePersonData(responseData);
@@ -52,7 +52,7 @@ namespace Client.Services
 
     public void GetById(int id)
     {
-      var request = new RestRequest(_url + id);
+      var request = new RestRequest(Url + id);
       var response = _client.Get<Person>(request);
       var responseData = JsonConvert.DeserializeObject<Person>(response.Content);
       ResponseDataDescription(response, responseData);
@@ -60,7 +60,7 @@ namespace Client.Services
 
     public void Create(Person person)
     {
-      var request = new RestRequest(_url) { Method = Method.POST, RequestFormat = DataFormat.Json };
+      var request = new RestRequest(Url) { Method = Method.POST, RequestFormat = DataFormat.Json };
       request.AddJsonBody(person);
       var response = _client.Post(request);
       var responseData = JsonConvert.DeserializeObject<Person>(response.Content);
@@ -70,7 +70,7 @@ namespace Client.Services
 
     public void Update(Person person)
     {
-      var request = new RestRequest(_url) { Method = Method.PUT, RequestFormat = DataFormat.Json };
+      var request = new RestRequest(Url) { Method = Method.PUT, RequestFormat = DataFormat.Json };
       request.AddJsonBody(person);
       var response = _client.Put(request);
       var responseData = JsonConvert.DeserializeObject<Person>(response.Content);
@@ -80,9 +80,9 @@ namespace Client.Services
 
     public void Delete(int personId)
     {
-      var request = new RestRequest(_url + personId) { Method = Method.DELETE, RequestFormat = DataFormat.Json };
+      var request = new RestRequest(Url + personId) { Method = Method.DELETE, RequestFormat = DataFormat.Json };
       var response = _client.Delete(request);
-      var responseData = JsonConvert.DeserializeObject<Person>(response.Content);//Chance generic type to int if need
+      var responseData = JsonConvert.DeserializeObject<Person>(response.Content);
       UpdatePersonData();
       ResponseDataDescription(response, responseData);
     }

@@ -10,7 +10,6 @@ namespace Client
   {
     static void Main(string[] args)
     {
-      
       Run();
       Console.ReadLine();
     }

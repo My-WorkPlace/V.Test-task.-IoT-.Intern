@@ -37,15 +37,14 @@ namespace WebServer.Services
 
     public async Task<Category> UpdateAsync(Category category)
     {
-      var tmp = await _dataContext.Categories.FirstOrDefaultAsync(c => c.Id == category.Id);
-      if (tmp != null)
+      var originalCategory = await _dataContext.Categories.FirstOrDefaultAsync(c => c.Id == category.Id);
+      if (originalCategory != null)
       {
-        tmp.Name = category.Name;
-        _dataContext.Categories.Update(tmp);
+        originalCategory.Name = category.Name;
+        _dataContext.Categories.Update(originalCategory);
         await _dataContext.SaveChangesAsync();
-        return tmp;
       }
-      return null;
+      return originalCategory;
     }
 
     public async Task<int> DeleteAsync(int categoryId)

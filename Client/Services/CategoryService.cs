@@ -18,12 +18,12 @@ namespace Client.Services
 
   public class CategoryService : ICategoryService
   {
-    private readonly string _url = "http://localhost:4000/category/";
+    private const string Url = "http://localhost:4000/category/";
     private readonly IRestClient _client;
     public List<Category> CategoryData { get; }
     public CategoryService()
     {
-      _client = new RestClient(_url);
+      _client = new RestClient(Url);
       CategoryData = new List<Category>();
       UpdateCategoryData();
     }
@@ -35,7 +35,7 @@ namespace Client.Services
     }
     private void UpdateCategoryData()
     {
-      var request = new RestRequest(_url);
+      var request = new RestRequest(Url);
       var response = _client.Get<List<Category>>(request);
       var responseData = JsonConvert.DeserializeObject<List<Category>>(response.Content);
       UpdateCategoryData(responseData);
@@ -43,7 +43,7 @@ namespace Client.Services
 
     public void GetAll()
     {
-      var request = new RestRequest(_url);
+      var request = new RestRequest(Url);
       var response = _client.Get<List<Category>>(request);
       var responseData = JsonConvert.DeserializeObject<List<Category>>(response.Content);
       UpdateCategoryData(responseData);
@@ -52,7 +52,7 @@ namespace Client.Services
 
     public void GetById(int id)
     {
-      var request = new RestRequest(_url + id);
+      var request = new RestRequest(Url + id);
       var response = _client.Get<Category>(request);
       var responseData = JsonConvert.DeserializeObject<Category>(response.Content);
       ResponseDataDescription(response, responseData);
@@ -60,7 +60,7 @@ namespace Client.Services
 
     public void Create(Category category)
     {
-      var request = new RestRequest(_url) { Method = Method.POST, RequestFormat = DataFormat.Json };
+      var request = new RestRequest(Url) { Method = Method.POST, RequestFormat = DataFormat.Json };
       request.AddJsonBody(category);
       var response = _client.Post(request);
       var responseData = JsonConvert.DeserializeObject<Category>(response.Content);
@@ -70,10 +70,8 @@ namespace Client.Services
 
     public void Update(Category category)
     {
-      var request = new RestRequest(_url) { Method = Method.PUT, RequestFormat = DataFormat.Json };
-      var bodyObj = CategoryData.Find(p => p.Id == category.Id);//TODO not sure
-      bodyObj.Name = category.Name;
-      request.AddJsonBody(bodyObj);
+      var request = new RestRequest(Url) { Method = Method.PUT, RequestFormat = DataFormat.Json };
+      request.AddJsonBody(category);
       var response = _client.Put(request);
       var responseData = JsonConvert.DeserializeObject<Category>(response.Content);
       UpdateCategoryData();
@@ -82,7 +80,7 @@ namespace Client.Services
 
     public void Delete(int categoryId)
     {
-      var request = new RestRequest(_url + categoryId) { Method = Method.DELETE, RequestFormat = DataFormat.Json };
+      var request = new RestRequest(Url + categoryId) { Method = Method.DELETE, RequestFormat = DataFormat.Json };
       var response = _client.Delete(request);
       var responseData = JsonConvert.DeserializeObject<Category>(response.Content);
       UpdateCategoryData();
