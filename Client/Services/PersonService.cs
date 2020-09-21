@@ -20,7 +20,7 @@ namespace Client.Services
   {
     private readonly string _url = "http://localhost:4000/person/";
     private readonly IRestClient _client;
-    public List<Person> PersonsData { get;}
+    public List<Person> PersonsData { get; }
     public PersonService()
     {
       _client = new RestClient(_url);
@@ -45,7 +45,7 @@ namespace Client.Services
     {
       var request = new RestRequest(_url);
       var response = _client.Get<List<Person>>(request);
-      var responseData =JsonConvert.DeserializeObject<List<Person>>(response.Content);
+      var responseData = JsonConvert.DeserializeObject<List<Person>>(response.Content);
       UpdatePersonData(responseData);
       ResponseDataDescription(response, responseData);
     }
@@ -60,7 +60,7 @@ namespace Client.Services
 
     public void Create(Person person)
     {
-      var request = new RestRequest(_url) {Method = Method.POST, RequestFormat = DataFormat.Json};
+      var request = new RestRequest(_url) { Method = Method.POST, RequestFormat = DataFormat.Json };
       request.AddJsonBody(person);
       var response = _client.Post(request);
       var responseData = JsonConvert.DeserializeObject<Person>(response.Content);
@@ -70,7 +70,7 @@ namespace Client.Services
 
     public void Update(Person person)
     {
-      var request = new RestRequest(_url){Method = Method.PUT, RequestFormat = DataFormat.Json};
+      var request = new RestRequest(_url) { Method = Method.PUT, RequestFormat = DataFormat.Json };
       request.AddJsonBody(person);
       var response = _client.Put(request);
       var responseData = JsonConvert.DeserializeObject<Person>(response.Content);
@@ -80,11 +80,11 @@ namespace Client.Services
 
     public void Delete(int personId)
     {
-      var request = new RestRequest(_url+personId) {Method = Method.DELETE, RequestFormat = DataFormat.Json};
+      var request = new RestRequest(_url + personId) { Method = Method.DELETE, RequestFormat = DataFormat.Json };
       var response = _client.Delete(request);
       var responseData = JsonConvert.DeserializeObject<Person>(response.Content);//Chance generic type to int if need
       UpdatePersonData();
-      ResponseDataDescription(response,responseData);
+      ResponseDataDescription(response, responseData);
     }
 
     private void ResponseDataDescription(IRestResponse response, Person responseData)
@@ -132,14 +132,15 @@ namespace Client.Services
       {
         Console.WriteLine($"Status code :{response.StatusCode}");
       }
-      else
+      if (data == null)
       {
-        Console.WriteLine("Persons");
-        Console.WriteLine($"First name :{data.FirstName}");
-        Console.WriteLine($"Last name :{data.LastName}");
-        Console.WriteLine($"Category Id :{data.CategoryId}");
-        Console.WriteLine("--------------------------");
+        return;
       }
+      Console.WriteLine("Person");
+      Console.WriteLine($"First name :{data.FirstName}");
+      Console.WriteLine($"Last name :{data.LastName}");
+      Console.WriteLine($"Category Id :{data.CategoryId}");
+      Console.WriteLine("--------------------------");
     }
   }
 }

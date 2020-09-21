@@ -16,11 +16,11 @@ namespace Client.Services
     void Delete(int categoryId);
   }
 
-  public class CategoryService:ICategoryService
+  public class CategoryService : ICategoryService
   {
     private readonly string _url = "http://localhost:4000/category/";
     private readonly IRestClient _client;
-    public List<Category> CategoryData { get;}
+    public List<Category> CategoryData { get; }
     public CategoryService()
     {
       _client = new RestClient(_url);
@@ -71,7 +71,7 @@ namespace Client.Services
     public void Update(Category category)
     {
       var request = new RestRequest(_url) { Method = Method.PUT, RequestFormat = DataFormat.Json };
-      var bodyObj = CategoryData.Find(p => p.Id ==category.Id);//TODO not sure
+      var bodyObj = CategoryData.Find(p => p.Id == category.Id);//TODO not sure
       bodyObj.Name = category.Name;
       request.AddJsonBody(bodyObj);
       var response = _client.Put(request);
@@ -82,14 +82,14 @@ namespace Client.Services
 
     public void Delete(int categoryId)
     {
-      var request = new RestRequest(_url+categoryId) { Method = Method.DELETE, RequestFormat = DataFormat.Json };
+      var request = new RestRequest(_url + categoryId) { Method = Method.DELETE, RequestFormat = DataFormat.Json };
       var response = _client.Delete(request);
       var responseData = JsonConvert.DeserializeObject<Category>(response.Content);
       UpdateCategoryData();
       ResponseDataDescription(response, responseData);
     }
 
-    private void RequsetTemplate<T>(IRestRequest request,Method methodType,T body)
+    private void RequsetTemplate<T>(IRestRequest request, Method methodType, T body)
     {
       //TODO create generic method 
     }
@@ -137,12 +137,13 @@ namespace Client.Services
       {
         Console.WriteLine($"Status code :{response.StatusCode}");
       }
-      else
+      if (data == null)
       {
-        Console.WriteLine("Category");
-        Console.WriteLine($"Name :{data.Name}");
-        Console.WriteLine("--------------------------");
+        return;
       }
+      Console.WriteLine("Category");
+      Console.WriteLine($"Name :{data.Name}");
+      Console.WriteLine("--------------------------");
     }
   }
 }
