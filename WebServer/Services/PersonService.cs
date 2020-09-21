@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebServer.Entities;
 using WebServer.Helpers;
@@ -35,19 +36,17 @@ namespace WebServer.Services
     public async Task<Person> UpdateAsync(Person person)
     {
       var tmp = await _dataContext.Persons.FirstOrDefaultAsync(x => x.Id == person.Id);
-      if (tmp == null)
+      if (tmp != null)
       {
-        await _dataContext.Persons.AddAsync(person);
-        await _dataContext.SaveChangesAsync();
-        return person;
-      }
-      tmp.FirstName = person.FirstName;
-      tmp.LastName = person.LastName;
-      tmp.CategoryId = person.CategoryId;
+        tmp.FirstName = person.FirstName;
+        tmp.LastName = person.LastName;
+        tmp.CategoryId = person.CategoryId;
 
-      _dataContext.Persons.Update(tmp);
-      await _dataContext.SaveChangesAsync();
-      return tmp;
+        _dataContext.Persons.Update(tmp);
+        await _dataContext.SaveChangesAsync();
+        return tmp;
+      }
+      return null;
     }
     
     public async Task<int> DeleteAsync(int id)

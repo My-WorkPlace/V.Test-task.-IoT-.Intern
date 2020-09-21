@@ -40,8 +40,8 @@ namespace WebServer.Controllers
     [HttpPut]
     public async Task<IActionResult> Update(Person person)
     {
-      await _personService.UpdateAsync(person);
-      return Ok();
+      var res= await _personService.UpdateAsync(person);
+      return res == null ? (IActionResult) NotFound() : Ok(res);
     }
 
     [HttpDelete("{id}")]

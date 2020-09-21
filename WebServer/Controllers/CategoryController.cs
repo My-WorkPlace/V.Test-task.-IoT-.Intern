@@ -40,8 +40,8 @@ namespace WebServer.Controllers
     [HttpPut]
     public async Task<IActionResult> Update(Category category)
     {
-      await _categoryService.UpdateAsync(category);
-      return Ok();
+      var res = await _categoryService.UpdateAsync(category);
+      return res == null ? (IActionResult)NotFound() : Ok(res);
     }
 
     [HttpDelete("{id}")]
