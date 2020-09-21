@@ -89,9 +89,9 @@ namespace Client.Services
       ResponseDataDescription(response, responseData);
     }
 
-    private void RequsetTemplate(IRestRequest request,Method methodType,Object body)
+    private void RequsetTemplate<T>(IRestRequest request,Method methodType,T body)
     {
-      //TODO create general method 
+      //TODO create generic method 
     }
 
     private void ResponseDataDescription(IRestResponse response, IEnumerable<Category> responseData)

@@ -20,18 +20,18 @@ namespace Client.Services
   {
     private readonly string _url = "http://localhost:4000/person/";
     private readonly IRestClient _client;
-    private readonly List<Person> _personsData;
+    public List<Person> PersonsData { get;}
     public PersonService()
     {
       _client = new RestClient(_url);
-      _personsData = new List<Person>();
+      PersonsData = new List<Person>();
       UpdatePersonData();
     }
 
     private void UpdatePersonData(IEnumerable<Person> data)
     {
-      _personsData.Clear();
-      _personsData.AddRange(data);
+      PersonsData.Clear();
+      PersonsData.AddRange(data);
     }
     private void UpdatePersonData()
     {
@@ -71,11 +71,7 @@ namespace Client.Services
     public void Update(Person person)
     {
       var request = new RestRequest(_url){Method = Method.PUT, RequestFormat = DataFormat.Json};
-      var bodyObj = _personsData.Find(p => p.Id == person.Id);
-      bodyObj.FirstName = person.FirstName;
-      bodyObj.LastName = person.LastName;
-      bodyObj.CategoryId = person.CategoryId;
-      request.AddJsonBody(bodyObj);
+      request.AddJsonBody(person);
       var response = _client.Put(request);
       var responseData = JsonConvert.DeserializeObject<Person>(response.Content);
       UpdatePersonData();
@@ -84,9 +80,7 @@ namespace Client.Services
 
     public void Delete(int personId)
     {
-      var request = new RestRequest(_url) {Method = Method.DELETE, RequestFormat = DataFormat.Json};
-      //var bodyObj = _personsData.Find(p => p.Id == person.Id);
-      request.AddJsonBody(personId);
+      var request = new RestRequest(_url+personId) {Method = Method.DELETE, RequestFormat = DataFormat.Json};
       var response = _client.Delete(request);
       var responseData = JsonConvert.DeserializeObject<Person>(response.Content);//Chance generic type to int if need
       UpdatePersonData();
